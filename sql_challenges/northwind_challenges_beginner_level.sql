@@ -127,6 +127,74 @@ WHERE 1=1
 ;
 --*/
 
+/* #14
+SELECT DISTINCT
+ [total_customers] = COUNT([CustomerID])
+FROM
+ [dbo].[customers]
+WHERE 1=1
+;
+--*/
+
+/* #15
+     SELECT [first_order] = MIN([OrderDate])
+       FROM [dbo].[Orders]
+      WHERE 1=1
+;
+--*/
+
+/* #16
+     SELECT DISTINCT [Country]
+       FROM [dbo].[Customers]
+      WHERE 1=1
+      ORDER BY [Country]
+;
+--*/
+
+/* #17
+     SELECT DISTINCT [title_count] = COUNT([ContactTitle])
+          , [title_name] = [ContactTitle]
+       FROM [dbo].[Customers]
+      WHERE 1=1
+   GROUP BY [ContactTitle]
+   ORDER BY [title_count] DESC
+;
+--*/
+
+/* #18
+     SELECT [product_id] = A.[ProductID]
+          , [product_name] = A.[ProductName]
+          , [company_name] = B.[CompanyName]
+       FROM [dbo].[Products] AS A
+  LEFT JOIN [dbo].[Suppliers] AS B
+         ON A.[SupplierID] = B.[SupplierID]
+      WHERE 1=1
+   ORDER BY A.[ProductID]
+;
+--*/
+
+/* #19_a returns 140 rows
+     SELECT [OrderID]
+          , [order_date] = CAST([OrderDate] AS DATE)
+          , [ShipperName]
+       FROM [dbo].[Invoices]
+      WHERE 1=1
+        AND [OrderID] < 10300
+;
+--*/
+
+/* #19_b returns 52 rows
+     SELECT A.[OrderID]
+          , [order_date] = CAST(A.[OrderDate] AS DATE)
+          , [CompanyName]
+       FROM [dbo].[Orders] AS A
+  LEFT JOIN [dbo].[Shippers] AS B
+         ON A.[ShipVia] = B.[ShipperID]
+      WHERE 1=1
+        AND A.[OrderID] < 10300
+   ORDER BY A.[OrderID]
+;
+--*/
 
 
 /*
@@ -135,7 +203,12 @@ WHERE 1=1
     Time ........: 19:58
     Desc ........: Questions
     Notes........:
-        14.
+        19. We'd like to show a list of the Orders that were made, including the Shipper that was used. Show the OrderID, OrderDate, and CompanyName of the Shipper, and sort by OrderID. In order to not show all the orders, show only those rows with an OrderID of les than 10300.
+        18. We'd like to show, for each product, the associated Supplier. Show the ProductID, ProductName, and the CompanyName of the supplier. Sort by ProductID.
+        17. Show a list of all the different values in the Customers table for Contact  Titles. Also include a count for each ContactTitle.
+        16. Show a list of countries where the Northwind company has customers.
+        15. Show the date of the first order ever made in the Orders table.
+        14. How many customers do we have in the Customers table? Show one value only, and don't rely on getting the record count at the end of a resultset.
         13. In the OrderDetails table, we have the fields UnitPrice and Quanitity. Create a new field, TotalPrice, that multiplies these two together. We'll ignore the discount field for now.
         12. Show the FirstName and LastName columns from the Employees table, and then create a new column called FullName, showing FirstName and LastName joined together in one column, with a space in-between.
         11. In the output of the previous query, showing the Employees in order of BirthDate, we see the time of the BirthDate field, which we don't want. Show only the date portion of the BirthDate field.
