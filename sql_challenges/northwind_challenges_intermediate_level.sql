@@ -81,7 +81,7 @@ WITH
           , A.[CompanyName]
 --*/
 
---/* #5b
+/* #5b
      SELECT [CustomerID]
           , [CompanyName]
           , [Region]
@@ -95,7 +95,84 @@ WITH
 ;
 --*/
 
+/* #6
+     SELECT TOP 3 [country] = A.[ShipCountry]
+          , [freight_avg] = AVG(A.[Freight])
+       FROM [dbo].[Orders] AS A
+      WHERE 1=1
+   GROUP BY A.[ShipCountry]
+   ORDER BY [freight_avg] DESC
+;
+--*/
 
+/* #7
+     SELECT TOP 3 [country] = A.[ShipCountry]
+          , [freight_avg] = AVG(A.[Freight])
+       FROM [dbo].[Orders] AS A
+      WHERE 1=1
+      AND YEAR(A.[OrderDate]) = '1996'
+   GROUP BY A.[ShipCountry]
+   ORDER BY [freight_avg] DESC
+;
+--*/
+
+/* #8
+     SELECT B.[EmployeeID]
+          , B.[LastName]
+          , A.[OrderID]
+          , D.[ProductName]
+          , C.[Quantity]
+       FROM [dbo].[Orders] AS A
+  LEFT JOIN [dbo].[Employees] AS B
+         ON A.[EmployeeID] = B.[EmployeeID]
+  LEFT JOIN [dbo].[Order Details] AS C
+         ON A.[OrderID] = C.[OrderID]
+  LEFT JOIN [dbo].[Products] AS D
+         ON C.[ProductID] = D.[ProductID]
+      WHERE 1=1
+   ORDER BY A.[OrderID]
+          , D.[ProductID]
+;
+--*/
+
+/* SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE 1=1 AND COLUMN_NAME LIKE '%customerid%' ORDER BY TABLE_NAME */
+/* #9
+     SELECT A.[CustomerID]
+       FROM [dbo].[Customers] AS A
+  FULL JOIN [dbo].[Orders] AS B
+         ON A.[CustomerID] = B.[CustomerID]
+      WHERE 1=1
+        AND B.[CustomerID] IS NULL
+;
+--*/
+/* --use this subquery if you don't use the IS NULL approach
+AND A.[CustomerID] NOT IN(
+SELECT [CustomerID] FROM [dbo].[Orders]
+)
+*/ --next line returns exact same result
+
+/* #10a
+     SELECT DISTINCT A.[CompanyName]
+       FROM [dbo].[Customers] AS A
+  LEFT JOIN [dbo].[Orders] AS B
+         ON A.[CustomerID] = B.[CustomerID]
+      WHERE 1=1
+        AND B.[EmployeeID] != '4'
+        ORDER BY A.[CompanyName]
+;
+--*/
+
+/* #10b
+SELECT
+ [nam] = A.[CompanyName]
+FROM
+ [dbo].[Customers] AS A
+WHERE 1=1
+AND A.[CustomerID] NOT IN (
+     SELECT [CustomerID] FROM [dbo].[Orders] WHERE [EmployeeID] = '4'
+)
+;
+--*/
 
 
 /*
@@ -104,6 +181,14 @@ WITH
   Time ........: 09:34
   Desc ........: The intermediate section of the course
   Notes........:
+    10. One employee Margaret Peacock, EmployeeID 4 has placed the most orders. However, thera rea customers who've never placed an order with her. Show only those customers who have never placed an order with her.
+    --SELECT [EmployeeID], [full_name] = [FirstName] + ' ' + [LastName] FROM [dbo].[Employees]
+    I failed #10 because I returned 88 results. In 10b the results are 16 which means that only those customers have never ordered from Margaret. Wherease, 10a shows only the orders not placed by Margaret.
+    9. Find the customer who have never actually placed any orders. Find the list of those customers.
+    8. Show EmployeeID, LastName, OrderID, ProductName, Quantity for all orders and sort them by OrderID and ProductID.
+    Note that it says "for all orders" so this should be the first table and left join all others. The productid can be joined by using the orderdetails table. returns 2155 rows.
+    7. Find top 3 ship countries with highest average freight overall only for order from year 1996, in descending order by avearage freight.
+    6. Find top 3 ship countries with highest average frieght overall, in descendingorder by average freight.
     5. Get list of all customers, sorted by region, alphabetically. But keep the customers with no region (null Region) to be at the end, instead of at the top. Within the same region companies should be sorted by CustomerID.
     4. Find the products which need re-rodering with criteria: UnitsInStock + UnitsOnOrder <= ReorderLevel and which are not discontinued.
     3. Find the products which need to be reordered, i.e., UnitsInStock less than ReorderLevel, ignoring fields UnitsOnOrder and Discontinued, and order the results by ProductID.
@@ -115,7 +200,6 @@ WITH
     1. Find the total number of products in each category and sort the results by the total number of products in descending order.
     I used group by but this failed because I used too many columns. If simplified to show only categoryname and the county of products it works.
 */
-
 
 
 GO
