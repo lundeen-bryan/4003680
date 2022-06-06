@@ -42,7 +42,7 @@ GO
 ;
 --*/
 
---/* #4
+/* #4
      SELECT [product_name] = A.[ProductName]
           , [order_now] = CASE WHEN A.[ReorderLevel] - A.[UnitsInStock] >=1
                                THEN 'Yes'
@@ -57,6 +57,45 @@ GO
 ;
 --*/
 
+/* #5a
+WITH
+     Step1 AS (SELECT [Region]
+                    , [CompanyName]
+                    , [CustomerID]
+                 FROM [dbo].[Customers])
+         ,
+     Step2 AS (SELECT *
+                    , [customer_row_num] = ROW_NUMBER() OVER (PARTITION BY [Region]
+                                                             ORDER BY [CompanyName])
+                    , [region_located] = IIF([Region] IS NULL, 1, 0)
+                 FROM Step1)
+     SELECT  A.[CustomerID]
+          , A.[Region]
+          , A.[CompanyName]
+       FROM Step1 AS A
+       JOIN Step2 AS B
+         ON A.[CustomerID] = B.[CustomerID]
+   ORDER BY B.[region_located]
+          , A.[Region]
+          , B.[customer_row_num]
+          , A.[CompanyName]
+--*/
+
+--/* #5b
+     SELECT [CustomerID]
+          , [CompanyName]
+          , [Region]
+       FROM [dbo].[Customers]
+      WHERE 1=1
+   ORDER BY CASE WHEN [Region] IS NULL THEN 1
+                ELSE 0
+           END
+          , [Region]
+          , [CustomerID]
+;
+--*/
+
+
 
 
 /*
@@ -65,6 +104,7 @@ GO
   Time ........: 09:34
   Desc ........: The intermediate section of the course
   Notes........:
+    5. Get list of all customers, sorted by region, alphabetically. But keep the customers with no region (null Region) to be at the end, instead of at the top. Within the same region companies should be sorted by CustomerID.
     4. Find the products which need re-rodering with criteria: UnitsInStock + UnitsOnOrder <= ReorderLevel and which are not discontinued.
     3. Find the products which need to be reordered, i.e., UnitsInStock less than ReorderLevel, ignoring fields UnitsOnOrder and Discontinued, and order the results by ProductID.
     Assumptions: include when the unitsInStock are =< the ReorderLevel.

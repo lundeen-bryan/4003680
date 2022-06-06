@@ -68,6 +68,13 @@ The course is taught by Kaustubh Sathe who is a Software Engineer in India. He g
 |          `01:45`   | intermediate_challenges |
 |        **`01:45`** | **Total**               |
 
+## Sunday 05 June
+
+| Time span          | Task                    |
+| -----------------: | ----------------------- |
+|          `03:00`   | intermediate_challenges |
+|        **`03:00`** | **Total**               |
+
 
 [Back To The Top](#sql-challenges-learn-sql-by-solving-challenging-problems)
 
