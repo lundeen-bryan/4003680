@@ -77,7 +77,23 @@ The course is taught by Kaustubh Sathe who is a Software Engineer in India. He g
 
 ## Monday 06 June
 
-- `08:31` //_Let's go!_
+| Time span          | Task                |
+| -----------------: | ------------------- |
+|          `12:15`   | advanced_challenges |
+|        **`12:15`** | **Total**           |
+
+## Saturday 11 June
+
+| Time span          | Task                |
+| -----------------: | ------------------- |
+|          `12:00`   | advanced_challenges |
+|        **`12:00`** | **Total**           |
+
+## Sunday 12 June
+
+- `10:45` //_Good morning_
+- `12:45` advanced_challenges
+- `16:16` //_Break_
 
 
 
